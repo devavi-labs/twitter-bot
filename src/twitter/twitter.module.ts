@@ -1,5 +1,5 @@
 import { Module } from "@nestjs/common"
-import { Constants } from "src/utils/constants"
+import { Constants } from "src/constants"
 import { TwitterController } from "./twitter.controller"
 import { TwitterService } from "./twitter.service"
 

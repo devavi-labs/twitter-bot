@@ -1,7 +1,7 @@
 import { Module } from "@nestjs/common"
 import { ConfigModule } from "@nestjs/config"
 import globalConfig from "src/config/global.config"
-import { WebhookModule } from "src/webhook/webhook.module"
+import { TwitterModule } from "src/twitter/twitter.module"
 import twitterConfig from "../config/twitter.config"
 import { AppController } from "./app.controller"
 import { AppService } from "./app.service"
@@ -12,7 +12,7 @@ import { AppService } from "./app.service"
       load: [twitterConfig, globalConfig],
       isGlobal: true,
     }),
-    WebhookModule,
+    TwitterModule,
   ],
   controllers: [AppController],
   providers: [AppService],
