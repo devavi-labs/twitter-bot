@@ -17,6 +17,7 @@ export class TwitterController {
 
   @Post()
   storeWebhookID(@Body() data: Record<string, string>) {
+    console.log("data: ", data)
     const webhookIdDto = WebhookIdDto.fromJSON(data)
     return this.twitterService.storeWebhookId(webhookIdDto)
   }
