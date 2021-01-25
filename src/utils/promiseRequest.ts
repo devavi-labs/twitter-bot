@@ -5,7 +5,7 @@ export function promiseRequest(options: request.Options): Promise<any> {
     request(options, function (_, res, body) {
       if (body.includes("error")) {
         reject(body)
-      } else if (res.statusCode == 200) {
+      } else if (res.statusCode.toString().startsWith("2")) {
         resolve(body)
       }
     })

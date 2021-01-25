@@ -1,5 +1,4 @@
 import { Body, Controller, Get, Logger, Post, Query } from "@nestjs/common"
-import { WebhookType } from "src/types/webhook.type"
 import { TwitterService } from "./twitter.service"
 
 @Controller("webhook/twitter")
@@ -20,14 +19,13 @@ export class TwitterController {
       response_token: responseToken,
     }
 
-    this.logger.log("Returning following response to Twitter:")
-    this.logger.log(response)
+    this.logger.log("Returning response to Twitter")
 
     return response
   }
 
   @Post()
-  webhookRegisterResponse(@Body() webhook: WebhookType) {
-    this.logger.log(`Webhook registered with id ${webhook.id}`)
+  webhookRegisterResponse(@Body() data: any) {
+    this.logger.log(data)
   }
 }
