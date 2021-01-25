@@ -26,11 +26,14 @@ export class TwitterService {
   }
 
   triggerChallenge() {
+    const url =
+      this.constants.webhooksEndpoint +
+      "/" +
+      this.configSerivce.get<TwitterConfig>(TWITTER).webhookId +
+      ".json"
+    console.log(url)
     const requestOptions = {
-      url:
-        this.constants.webhooksEndpoint +
-        this.configSerivce.get<TwitterConfig>(TWITTER).webhookId +
-        ".json",
+      url,
       oauth: this.oauth,
     }
 
