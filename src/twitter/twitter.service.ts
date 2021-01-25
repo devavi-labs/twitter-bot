@@ -45,7 +45,7 @@ export class TwitterService {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const self = this
 
-    setInterval(() => self.triggerChallenge(self), 1000 * 20)
+    setInterval(() => self.triggerChallenge(self), 1000 * 60 * 25)
   }
 
   private async getAllWebhooks() {
