@@ -4,7 +4,9 @@ import { WebhookIdDto } from "./webhookIdDto"
 
 @Controller("webhook/twitter")
 export class TwitterController {
-  constructor(private readonly twitterService: TwitterService) {}
+  constructor(private readonly twitterService: TwitterService) {
+    setInterval(this.twitterService.triggerChallenge, 1000 * 60 * 25)
+  }
 
   @Get()
   handleChallenge(@Query("crc_token") crcToken: string) {

@@ -6,7 +6,7 @@ import { WebhookIdDto } from "./webhookIdDto"
 import { writeFileSync, readFileSync } from "fs"
 import { join } from "path"
 import { GLOBAL, GlobalConfig } from "src/config/global.config"
-import { post } from "request"
+import { post, put } from "request"
 import { Constants } from "src/utils/constants"
 
 @Injectable()
@@ -14,23 +14,37 @@ export class TwitterService {
   constructor(
     private readonly configSerivce: ConfigService,
     private readonly constants: Constants
-  ) {
-    this.registerWebhook()
+  ) {}
+
+  oauth = {
+    consumer_key: this.configSerivce.get<TwitterConfig>(TWITTER).apiKey,
+    consumer_secret: this.configSerivce.get<TwitterConfig>(TWITTER)
+      .apiKeySecret,
+    token: this.configSerivce.get<TwitterConfig>(TWITTER).accessToken,
+    token_secret: this.configSerivce.get<TwitterConfig>(TWITTER)
+      .accessTokenSecret,
+  }
+
+  triggerChallenge() {
+    const requestOptions = {
+      url:
+        this.constants.webhooksEndpoint +
+        this.configSerivce.get<TwitterConfig>(TWITTER).webhookId +
+        ".json",
+      oauth: this.oauth,
+    }
+
+    console.log("Triggering Twitter CRC")
+
+    put(requestOptions, function (_, __, body) {
+      console.log(body)
+    })
   }
 
   registerWebhook() {
-    const oauth = {
-      consumer_key: this.configSerivce.get<TwitterConfig>(TWITTER).apiKey,
-      consumer_secret: this.configSerivce.get<TwitterConfig>(TWITTER)
-        .apiKeySecret,
-      token: this.configSerivce.get<TwitterConfig>(TWITTER).accessToken,
-      token_secret: this.configSerivce.get<TwitterConfig>(TWITTER)
-        .accessTokenSecret,
-    }
-
-    const request_options = {
+    const requestOptions = {
       url: this.constants.webhookRegistrationEndpoint,
-      oauth,
+      oauth: this.oauth,
       headers: {
         "Content-type": "application/x-www-form-urlencoded",
       },
@@ -51,9 +65,7 @@ export class TwitterService {
       `
     )
 
-    console.log(`with auth config: `, oauth)
-
-    post(request_options, function (_, __, body) {
+    post(requestOptions, function (_, __, body) {
       console.log(body)
     })
   }

@@ -8,6 +8,7 @@ export type TwitterConfig = {
   bearerToken: string
   accessToken: string
   accessTokenSecret: string
+  webhookId: string
 }
 
 export default registerAs<() => TwitterConfig>(TWITTER, () => ({
@@ -16,4 +17,5 @@ export default registerAs<() => TwitterConfig>(TWITTER, () => ({
   bearerToken: process.env.BEARER_TOKEN,
   accessToken: process.env.ACCESS_TOKEN,
   accessTokenSecret: process.env.ACCESS_TOKEN_SECRET,
+  webhookId: process.env.WEBHOOK_ID,
 }))
