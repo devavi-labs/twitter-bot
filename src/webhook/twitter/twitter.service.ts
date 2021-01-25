@@ -3,7 +3,7 @@ import { ConfigService } from "@nestjs/config"
 import { createHmac } from "crypto"
 import { TWITTER, TwitterConfig } from "src/config/twitter.config"
 import { WebhookIdDto } from "./webhookIdDto"
-import { writeFileSync } from "fs"
+import { writeFileSync, readFileSync } from "fs"
 import { join } from "path"
 import { GLOBAL, GlobalConfig } from "src/config/global.config"
 import { post } from "request"
@@ -70,5 +70,7 @@ export class TwitterService {
   storeWebhookId(webhookId: WebhookIdDto) {
     const path = join(__dirname, "id.json")
     writeFileSync(path, JSON.stringify(webhookId.toJSON()))
+    const file = readFileSync(path)
+    console.log("file: ", file)
   }
 }
