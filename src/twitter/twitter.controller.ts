@@ -48,7 +48,8 @@ export class TwitterController {
           UserEvent.Join,
           new UserJoinEvent(
             data["tweet_create_events"][0]["user"]["id_str"],
-            data["tweet_create_events"][0]["user"]["name"]
+            data["tweet_create_events"][0]["user"]["name"],
+            data["tweet_create_events"][0]["id_str"]
           )
         )
       } else if (
@@ -60,7 +61,8 @@ export class TwitterController {
           UserEvent.Leave,
           new UserLeaveEvent(
             data["tweet_create_events"][0]["user"]["id_str"],
-            data["tweet_create_events"][0]["user"]["name"]
+            data["tweet_create_events"][0]["user"]["name"],
+            data["tweet_create_events"][0]["id_str"]
           )
         )
       }

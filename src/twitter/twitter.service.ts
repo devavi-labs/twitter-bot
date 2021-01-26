@@ -9,7 +9,6 @@ import { GLOBAL, GlobalConfig } from "src/config/global.config"
 import { TWITTER, TwitterConfig } from "src/config/twitter.config"
 import { Constants } from "src/constants"
 import { OAuthService } from "src/oAuth/oAuth.service"
-import { StatusService } from "src/status/status.service"
 import { SubscriptionType } from "src/types/subscription.type"
 import { WebhookType } from "src/types/webhook.type"
 
@@ -17,7 +16,6 @@ import { WebhookType } from "src/types/webhook.type"
 export class TwitterService {
   constructor(
     private readonly configSerivce: ConfigService,
-    private readonly statusService: StatusService,
     private readonly oAuthService: OAuthService,
     private readonly constants: Constants
   ) {}

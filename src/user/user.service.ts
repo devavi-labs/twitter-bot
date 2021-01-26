@@ -1,8 +1,15 @@
 import { Inject, Injectable, Logger } from "@nestjs/common"
-import { OnEvent } from "@nestjs/event-emitter"
+import { EventEmitter2, OnEvent } from "@nestjs/event-emitter"
+import { StatusEvent } from "src/events/status/status.events"
+import { StatusReplyEvent } from "src/events/status/status.reply"
 import { UserEvent } from "src/events/user/user.events"
 import { UserJoinEvent } from "src/events/user/user.join"
 import { UserLeaveEvent } from "src/events/user/user.leave"
+import { alreadyJoinedTweet } from "src/tweets/alreadyJoined.tweet"
+import { errorTweet } from "src/tweets/error.tweet"
+import { joinedTweet } from "src/tweets/joined.tweet"
+import { leftTweet } from "src/tweets/left.tweet"
+import { userDoesntExistTweet } from "src/tweets/userDoesntExist.tweet"
 import { Repository } from "typeorm"
 import { User } from "./user.entity"
 import { USER_REPOSITORY } from "./user.providers"
@@ -11,13 +18,14 @@ import { USER_REPOSITORY } from "./user.providers"
 export class UserService {
   constructor(
     @Inject(USER_REPOSITORY)
-    private userRepository: Repository<User>
+    private userRepository: Repository<User>,
+    private eventEmitter: EventEmitter2
   ) {}
 
   private readonly logger = new Logger(UserService.name)
 
   @OnEvent(UserEvent.Join)
-  async save({ userId, name }: UserJoinEvent): Promise<void> {
+  async save({ userId, name, tweetId }: UserJoinEvent): Promise<void> {
     this.logger.log(`Saving user ${name} in database`)
 
     try {
@@ -25,19 +33,33 @@ export class UserService {
 
       if (user) {
         this.logger.log(`User ${name} already exists in database`)
+        this.eventEmitter.emit(
+          StatusEvent.Reply,
+          new StatusReplyEvent(alreadyJoinedTweet(name), tweetId, name)
+        )
         return null
       }
 
       await this.userRepository.insert({ id: userId })
 
+      this.eventEmitter.emit(
+        StatusEvent.Reply,
+        new StatusReplyEvent(joinedTweet(name), tweetId, name)
+      )
+
       return this.logger.log(`User ${name} saved in database`)
     } catch (_) {
+      this.eventEmitter.emit(
+        StatusEvent.Reply,
+        new StatusReplyEvent(errorTweet(name), tweetId, name)
+      )
+
       return this.logger.error(`Couldn't save user ${name}`)
     }
   }
 
   @OnEvent(UserEvent.Leave)
-  async removeOne({ userId, name }: UserLeaveEvent): Promise<void> {
+  async removeOne({ userId, name, tweetId }: UserLeaveEvent): Promise<void> {
     this.logger.warn(`Removing user ${name} from database`)
 
     try {
@@ -45,13 +67,27 @@ export class UserService {
 
       if (!user) {
         this.logger.log(`User ${name} doen't exist in database`)
+        this.eventEmitter.emit(
+          StatusEvent.Reply,
+          new StatusReplyEvent(userDoesntExistTweet(name), tweetId, name)
+        )
         return null
       }
 
       await this.userRepository.delete({ id: userId })
 
+      this.eventEmitter.emit(
+        StatusEvent.Reply,
+        new StatusReplyEvent(leftTweet(name), tweetId, name)
+      )
+
       return this.logger.log(`Removed user ${name} from database`)
     } catch (_) {
+      this.eventEmitter.emit(
+        StatusEvent.Reply,
+        new StatusReplyEvent(errorTweet(name), tweetId, name)
+      )
+
       return this.logger.error(`Couldn't remove user ${name} from database`)
     }
   }

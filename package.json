@@ -32,6 +32,7 @@
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^6.6.3",
+    "twitter-text": "^3.1.0",
     "typeorm": "^0.2.30"
   },
   "devDependencies": {
@@ -42,6 +43,7 @@
     "@types/logger": "^0.0.0",
     "@types/node": "^14.14.6",
     "@types/request": "^2.48.5",
+    "@types/twitter-text": "^3.1.0",
     "@typescript-eslint/eslint-plugin": "^4.6.1",
     "@typescript-eslint/parser": "^4.6.1",
     "eslint": "^7.12.1",

@@ -36,5 +36,6 @@ lerna-debug.log*
 # Environment Variables
 /.env
 
-# REST Tests
+# Tests files
 /.rest
+/*.test.js
