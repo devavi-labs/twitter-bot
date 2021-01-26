@@ -25,7 +25,7 @@ export class TwitterController {
   }
 
   @Post()
-  webhookRegisterResponse(@Body() data: any) {
-    this.logger.log(data)
+  webhookRegisterResponse(@Body() data: Record<string, any>) {
+    this.twitterService.listenToEvent(data)
   }
 }
