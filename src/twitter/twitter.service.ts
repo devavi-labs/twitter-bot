@@ -212,17 +212,4 @@ export class TwitterService {
 
     return `sha256=${hmac}`
   }
-
-  listenToEvent(data: Record<string, any>) {
-    if (
-      "tweet_create_events" in data &&
-      !data["user_has_blocked"] &&
-      data["tweet_create_events"][0]["user"]["id_str"] !== data["for_user_id"]
-    ) {
-      this.statusService.update(
-        `you too ${data["tweet_create_events"][0]["text"]}`,
-        data["tweet_create_events"][0]["id_str"]
-      )
-    }
-  }
 }
