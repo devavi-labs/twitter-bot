@@ -14,6 +14,6 @@ export class ConstantsProvider {
   readonly usersLookupEndpoint = `${this.rootEndpoint}/users/lookup.json`
   readonly usersShowEndpoint = `${this.rootEndpoint}/users/show.json`
 
-  readonly usersCountLimit = 1000
-  readonly followersCountLimit = 5000
+  readonly usersCountLimit = 50
+  readonly followersCountLimit = 2500
 }
