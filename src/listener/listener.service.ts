@@ -25,9 +25,7 @@ export class ListenerService {
     private readonly statusService: StatusService,
     private readonly twitterService: TwitterService,
     private readonly tweetsService: TweetsService
-  ) {
-    this.userService.compareForAllUsers()
-  }
+  ) {}
 
   private readonly logger = new Logger(ListenerService.name)
 
