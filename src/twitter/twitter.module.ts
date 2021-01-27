@@ -1,11 +1,13 @@
 import { Module } from "@nestjs/common"
-import { Constants } from "src/constants"
-import { OAuthService } from "src/oAuth/oAuth.service"
+import { ConstantsModule } from "src/constants/constants.module"
+import { OAuthModule } from "src/oAuth/oAuth.module"
 import { TwitterController } from "./twitter.controller"
 import { TwitterService } from "./twitter.service"
 
 @Module({
+  imports: [OAuthModule, ConstantsModule],
   controllers: [TwitterController],
-  providers: [TwitterService, Constants, OAuthService],
+  providers: [TwitterService],
+  exports: [TwitterService],
 })
 export class TwitterModule {}

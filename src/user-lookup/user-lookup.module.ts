@@ -1,11 +1,11 @@
 import { Module } from "@nestjs/common"
 import { ConstantsModule } from "src/constants/constants.module"
 import { OAuthModule } from "src/oAuth/oAuth.module"
-import { StatusService } from "./status.service"
+import { UserLookupService } from "./user-lookup.service"
 
 @Module({
   imports: [OAuthModule, ConstantsModule],
-  providers: [StatusService],
-  exports: [StatusService],
+  providers: [UserLookupService],
+  exports: [UserLookupService],
 })
-export class StatusModule {}
+export class UserLookupModule {}

@@ -3,8 +3,8 @@ import { BotCommand } from "src/commands/commands.bot"
 import { TwitterService } from "./twitter.service"
 import { EventEmitter2 } from "@nestjs/event-emitter"
 import { UserEvent } from "src/events/user/user.events"
-import { UserJoinEvent } from "src/events/user/user.join"
-import { UserLeaveEvent } from "src/events/user/user.leave"
+import { UserJoinEvent } from "src/events/user/join.user"
+import { UserLeaveEvent } from "src/events/user/leave.user"
 
 @Controller("webhook/twitter")
 export class TwitterController {
@@ -40,22 +40,23 @@ export class TwitterController {
       data["tweet_create_events"][0]["user"]["id_str"] !== data["for_user_id"]
     ) {
       if (
-        (data["tweet_create_events"][0]["text"] as string).startsWith(
-          BotCommand.Join
-        )
+        (data["tweet_create_events"][0]["text"] as string)
+          .toLowerCase()
+          .startsWith(BotCommand.Join)
       ) {
         this.eventEmitter.emit(
           UserEvent.Join,
           new UserJoinEvent(
             data["tweet_create_events"][0]["user"]["id_str"],
             data["tweet_create_events"][0]["user"]["name"],
-            data["tweet_create_events"][0]["id_str"]
+            data["tweet_create_events"][0]["id_str"],
+            data["tweet_create_events"][0]["user"]["followers_count"]
           )
         )
       } else if (
-        (data["tweet_create_events"][0]["text"] as string).startsWith(
-          BotCommand.Leave
-        )
+        (data["tweet_create_events"][0]["text"] as string)
+          .toLowerCase()
+          .startsWith(BotCommand.Leave)
       ) {
         this.eventEmitter.emit(
           UserEvent.Leave,

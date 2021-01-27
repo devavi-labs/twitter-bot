@@ -1,13 +1,12 @@
 import { Injectable, Logger } from "@nestjs/common"
 import { ConfigService } from "@nestjs/config"
-import { forEach } from "async-foreach"
 import axios from "axios"
 import axiosRateLimit from "axios-rate-limit"
 import { createHmac } from "crypto"
 import qs from "qs"
 import { GLOBAL, GlobalConfig } from "src/config/global.config"
 import { TWITTER, TwitterConfig } from "src/config/twitter.config"
-import { Constants } from "src/constants"
+import { ConstantsProvider } from "src/constants/constants.provider"
 import { OAuthService } from "src/oAuth/oAuth.service"
 import { SubscriptionType } from "src/types/subscription.type"
 import { WebhookType } from "src/types/webhook.type"
@@ -17,7 +16,7 @@ export class TwitterService {
   constructor(
     private readonly configSerivce: ConfigService,
     private readonly oAuthService: OAuthService,
-    private readonly constants: Constants
+    private readonly constants: ConstantsProvider
   ) {}
 
   private readonly logger = new Logger(TwitterService.name)
@@ -29,20 +28,16 @@ export class TwitterService {
     await this.getAllWebhooks()
 
     if (this.webhooks.length > 0) {
-      await forEach(this.webhooks, async (webhook: WebhookType) => {
-        await this.removeWebhook(webhook.id)
-      })
+      for (const i in this.webhooks) {
+        await this.removeWebhook(this.webhooks[i].id)
+      }
+
       this.webhooks = []
     }
 
     await this.registerWebhook()
     await this.registerSubscription()
     await this.getAllSubscriptions()
-
-    //eslint-disable-next-line @typescript-eslint/no-this-alias
-    const self = this
-
-    setInterval(() => self.triggerChallenge(self), 1000 * 60 * 25)
   }
 
   private http = axiosRateLimit(axios.create(), {
@@ -104,25 +99,23 @@ export class TwitterService {
     }
   }
 
-  private triggerChallenge(self: this) {
-    if (self.webhooks.length < 1) {
+  triggerChallenge() {
+    if (this.webhooks.length < 1) {
       this.logger.log("No webhook registered yet.")
       return
     }
 
-    const url = `${self.constants.envEndpoint}/webhooks/${self.webhooks[0].id}.json`
+    const url = `${this.constants.envEndpoint}/webhooks/${this.webhooks[0].id}.json`
 
-    self.logger.log("Triggering Twitter CRC")
+    this.logger.log("Triggering Twitter CRC")
 
     this.http
       .put(url, null, {
         headers: {
-          Authorization: self.oAuthService.oAuth01aHeader(url, "PUT"),
+          Authorization: this.oAuthService.oAuth01aHeader(url, "PUT"),
         },
       })
-      .catch((err) =>
-        this.logger.error("Couldn't connect because: ", err.response.data)
-      )
+      .catch((err) => this.logger.error(err.response))
   }
 
   private async registerWebhook() {

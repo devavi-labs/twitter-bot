@@ -1,21 +1,17 @@
 import { Injectable, Logger } from "@nestjs/common"
-import { Constants } from "src/constants"
-import axiosRateLimit from "axios-rate-limit"
 import axios from "axios"
+import axiosRateLimit from "axios-rate-limit"
 import qs from "qs"
+import { ConstantsProvider } from "src/constants/constants.provider"
 import { OAuthService } from "src/oAuth/oAuth.service"
-import { OnEvent } from "@nestjs/event-emitter"
-import { StatusEvent } from "src/events/status/status.events"
-import { StatusCreateEvent } from "src/events/status/status.create"
-import { StatusReplyEvent } from "src/events/status/status.reply"
-import twitter from "twitter-text"
 import { TweetParams } from "src/types/tweetParams.type"
+import twitter from "twitter-text"
 
 @Injectable()
 export class StatusService {
   constructor(
     private readonly oAuthService: OAuthService,
-    private readonly constants: Constants
+    private readonly constants: ConstantsProvider
   ) {}
 
   private readonly logger = new Logger(StatusService.name)
@@ -25,15 +21,13 @@ export class StatusService {
     perMilliseconds: 1000 * 60 * 60 * 3, // 3 Hours
   })
 
-  @OnEvent(StatusEvent.Tweet)
-  async create({ text }: StatusCreateEvent) {
+  async create(text: string) {
     this.logger.log(`Sending tweet: ${text}`)
 
     await this.sendTweetOrMakeThread(text)
   }
 
-  @OnEvent(StatusEvent.Reply)
-  async reply({ text, inReplyToTweetId, user }: StatusReplyEvent) {
+  async reply(text: string, user: string, inReplyToTweetId: string) {
     const partialParams: Partial<TweetParams> = {
       in_reply_to_status_id: inReplyToTweetId,
       auto_populate_reply_metadata: true,
