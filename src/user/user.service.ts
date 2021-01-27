@@ -49,11 +49,7 @@ export class UserService {
       return
     }
 
-    const count = await this.countUsers()
-
-    console.log(count)
-
-    if (count === this.constants.usersCountLimit) {
+    if ((await this.countUsers()) === this.constants.usersCountLimit) {
       this.eventEmitter.emit(
         LimitEvent.Users,
         new UsersLimitEvent(name, tweetId)
