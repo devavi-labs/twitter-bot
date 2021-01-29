@@ -24,4 +24,4 @@ These limitations are temporary, and I'll try to extend them.
 
 ## Find the bot on twitter **[@unphollowed](https://twitter.com/unphollowed)**
 
-## Find me on twitter **[@KaptaanAmricca](https://twitter.com/KaptaanAmricca)**
+## Find me on twitter **[@devavi26](https://twitter.com/devavi26)**
