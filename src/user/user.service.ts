@@ -203,18 +203,20 @@ export class UserService {
 
       const _unfollowers = _.difference(oldFollowers, newFollowers)
 
-      if (_unfollowers.length < 1) {
+      let unfollowers = []
+
+      if (_unfollowers.length > 1) {
+        unfollowers = await this.userLookupService.userLookup(_unfollowers)
+      }
+
+      if (unfollowers.length < 1) {
         return this.eventEmitter.emit(
           StatusEvent.Tweet,
           new StatusCreateEvent(
             this.tweetsService.noUnfollowers(user.name, user.screen_name)
           )
         )
-      }
-
-      const unfollowers = await this.userLookupService.userLookup(_unfollowers)
-
-      if (unfollowers.length < 5) {
+      } else if (unfollowers.length < 5) {
         this.eventEmitter.emit(
           StatusEvent.Tweet,
           new StatusCreateEvent(

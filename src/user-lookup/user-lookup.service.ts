@@ -18,10 +18,18 @@ export class UserLookupService {
     perMilliseconds: 1000 * 60, // 1 minute
   })
 
-  async userLookup(userIds: Array<string>): Promise<Array<UserObject>> {
-    const url = `${this.constants.usersLookupEndpoint}?user_id=${userIds.join(
-      ","
-    )}`
+  async userLookup(
+    userIds: Array<string | number>
+  ): Promise<Array<UserObject>> {
+    const ids = userIds.map((userId) => {
+      if (typeof userId === "number") {
+        return userId.toString()
+      } else return userId
+    })
+
+    this.logger.log(`Using user lookup endpoint for ids ${ids.join(", ")}`)
+
+    const url = `${this.constants.usersLookupEndpoint}?user_id=${ids.join(",")}`
 
     try {
       const { data } = await this.http.get<Array<UserObject>>(url, {
@@ -37,6 +45,8 @@ export class UserLookupService {
   }
 
   async userShow(userId: string): Promise<UserObject> {
+    this.logger.log(`Using user show endpoint for id ${userId}`)
+
     const url = `${this.constants.usersShowEndpoint}?user_id=${userId}`
 
     try {

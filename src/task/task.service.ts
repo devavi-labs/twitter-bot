@@ -22,7 +22,7 @@ export class TaskService {
     this.eventEmitter.emit(TaskEvent.RoutineCRC)
   }
 
-  @Cron(CronExpression.EVERY_DAY_AT_10AM)
+  @Cron(CronExpression.EVERY_DAY_AT_10PM, { timeZone: "Asia/Kolkata" })
   compareFollowers() {
     this.logger.log("Emitting followers comparision task")
     this.eventEmitter.emit(TaskEvent.FollowersCompare)
